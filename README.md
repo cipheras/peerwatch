@@ -1,12 +1,11 @@
 # PeerWatch &nbsp; ![GitHub release (latest by date)](https://img.shields.io/github/v/release/cipheras/peerwatch?style=flat-square&logo=superuser)
 #### A tool to stream videos directly into the VLC media player. 
 
-![Lines of code](https://img.shields.io/tokei/lines/github.com/cipheras/peerwatch?style=flat-square)
-&nbsp;&nbsp;&nbsp;&nbsp;![GO version](https://img.shields.io/github/go-mod/go-version/cipheras/peerwatch?style=flat-square&color=green)
+![GO version](https://img.shields.io/github/go-mod/go-version/cipheras/peerwatch?style=flat-square&color=green)
 &nbsp;&nbsp;&nbsp;&nbsp;![GitHub All Releases](https://img.shields.io/github/downloads/cipheras/peerwatch/total?style=flat-square)
 &nbsp;&nbsp;&nbsp;&nbsp;![platform](https://img.shields.io/badge/dynamic/json?url=https://jsonkeeper.com/b/KNO7&label=platform&query=platform&style=flat-square&labelColor=grey&color=purple)
 
-![example](../asset/screen.gif?raw=true)
+![example](../assets/screen.gif?raw=true)
 
 
 ## Download
