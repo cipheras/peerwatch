@@ -18,15 +18,23 @@ Windows | Linux
 
 ## Building
 You can use tool's pre-compiled binaries directly or you can compile from source.<br>
-To build from source, GO must be installed.<br>
+To build from source, GO must be installed.<br><br>
 For linux installation:
-```sudo make```
+```
+sudo make
+```
 For linux build:
-```sudo make build```
+```
+sudo make build
+```
 For linux uninstall:
-```sudo make uninstall```
+```
+sudo make uninstall
+```
 For windows:
-```go build```
+```
+go build
+```
 
 
 ## Usage
