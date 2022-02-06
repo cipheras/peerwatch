@@ -3,9 +3,10 @@
 
 ![Lines of code](https://img.shields.io/tokei/lines/github.com/cipheras/peerwatch?style=flat-square)
 &nbsp;&nbsp;&nbsp;&nbsp;![GO version](https://img.shields.io/github/go-mod/go-version/cipheras/peerwatch?style=flat-square&color=green)
+&nbsp;&nbsp;&nbsp;&nbsp;![GitHub All Releases](https://img.shields.io/github/downloads/cipheras/peerwatch/total?style=flat-square)
 &nbsp;&nbsp;&nbsp;&nbsp;![platform](https://img.shields.io/badge/dynamic/json?url=https://jsonkeeper.com/b/KNO7&label=platform&query=platform&style=flat-square&labelColor=grey&color=purple)
 
-![example](../asset/screen.png?raw=true)
+![example](../asset/screen.gif?raw=true)
 
 
 ## Download
@@ -18,14 +19,14 @@ Windows | Linux
 ## Building
 You can use tool's pre-compiled binaries directly or you can compile from source.<br>
 To build from source, GO must be installed.<br>
-<br>For linux installation:
-<br> ```sudo make```
-<br>For linux build:
-<br>```sudo make build```
-<br>For linux uninstall:
-<br>```sudo make uninstall```
-<br>For windows:
-<br>```go build```
+For linux installation:
+```sudo make```
+For linux build:
+```sudo make build```
+For linux uninstall:
+```sudo make uninstall```
+For windows:
+```go build```
 
 
 ## Usage
@@ -41,12 +42,9 @@ peerwatch.exe xyz
 or
 ./peerwatch "xyz blueray"
 ```
-<br>
-
 
 ## Disclaimer
-*This tool or author are not responsible for any type of copywrite claim. This tool work similarly as common user visiting the source and stream videos on their browsers.*<br>
-
+*This tool or author are not responsible for any type of copywrite claim. This tool work similarly as common user visiting the source and stream videos on their browsers.*
 
 ## License
 **peerwatch** is made by **@cipheras** and is released under the terms of the &nbsp;![GitHub License](https://img.shields.io/github/license/cipheras/peerwatch?color=darkgreen)
