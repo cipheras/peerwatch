@@ -12,7 +12,7 @@
 Download the tool from here:
 Windows | Linux
 --------|-------
-[win-x64](https://github.com/cipheras/peerwatch/releases/download/v1.0/peerwatch-x64.zip) | [linux-x64](https://github.com/cipheras/peerwatch/releases/download/v1.0/peerwatch-x64)
+[win-x64](https://github.com/cipheras/peerwatch/releases/download/v1.1/peerwatch-x64.zip) | [linux-x64](https://github.com/cipheras/peerwatch/releases/download/v1.1/peerwatch-x64)
 
 
 ## Building

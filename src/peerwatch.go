@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -18,7 +19,7 @@ import (
 )
 
 const (
-	VERSION = "v1.0"
+	VERSION = "v1.1"
 	RESET   = "\033[0m"
 	RED     = "\033[31m"
 	GREEN   = "\033[32m"
@@ -40,6 +41,7 @@ func main() {
 	windw()
 	banner()
 	interrupt()
+	checkUpdates()
 	flag.Usage = func() {
 		fmt.Print(GREEN + "\n----------------------------------" + PURPLE + " PeerWatch " + GREEN + "----------------------------------\n" + RESET)
 		fmt.Print(BOLD + CYAN + "./peerwatch " + RED + "[name]" + CYAN + " or ./peerwatch \"" + RED + "[name with multiple words]" + CYAN + "\"\n\n" + RESET)
@@ -144,6 +146,28 @@ Created by:				                       Version: -~{ ` + RESET + RED + `v1.0` + BO
 +-+ +-+ +-+ +-+ +-+ +-+ +-+ +-+	                                                                                
 ` + RESET
 	fmt.Print(bb)
+}
+
+func checkUpdates() {
+	resp, err := http.Get("https://api.github.com/repos/cipheras/peerwatch/releases")
+	if err != nil {
+		log.Fatalln("unable to check updates")
+	}
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln("unable to check updates")
+	}
+	var jsondata []map[string]interface{}
+	err = json.Unmarshal(data, &jsondata)
+	if err != nil {
+		log.Fatalln("error parsing update data")
+	}
+	version := jsondata[0]["tag_name"].(string)
+	releasName := jsondata[0]["name"].(string)
+	if version != VERSION {
+		fmt.Println(BOLD + CYAN + "Update available..." + RED + version + " [" + releasName + "]" + RESET)
+	}
 }
 
 func windw() {
