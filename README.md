@@ -1,11 +1,16 @@
-# PeerWatch &nbsp; ![GitHub release (latest by date)](https://img.shields.io/github/v/release/cipheras/peerwatch?style=flat-square&logo=superuser)
-#### A tool to stream videos directly into the VLC media player. 
+<img align="left" src="../assets/peerwatch.ico" alt="PeerWatch" width="40px" height="40px" />
 
-![GO version](https://img.shields.io/github/go-mod/go-version/cipheras/peerwatch?style=flat-square&color=green)
-&nbsp;&nbsp;&nbsp;&nbsp;![GitHub All Releases](https://img.shields.io/github/downloads/cipheras/peerwatch/total?style=flat-square)
-&nbsp;&nbsp;&nbsp;&nbsp;![platform](https://img.shields.io/badge/dynamic/json?url=https://jsonkeeper.com/b/KNO7&label=platform&query=platform&style=flat-square&labelColor=grey&color=purple)
+# PeerWatch &nbsp; ![GitHub release (latest by date)](https://img.shields.io/github/v/release/cipheras/peerwatch?style=flat-square&logo=superuser) 
 
-![example](../assets/screen.gif?raw=true)
+#### A tool to stream videos directly into the VLC media player.
+
+![GO version](https://img.shields.io/github/go-mod/go-version/cipheras/peerwatch?style=flat-square&color=blue)
+&nbsp;&nbsp;&nbsp;&nbsp;
+![GitHub All Releases](https://img.shields.io/github/downloads/cipheras/peerwatch/total?style=flat-square&color=darkgreen)
+&nbsp;&nbsp;&nbsp;&nbsp;
+![platform](https://img.shields.io/badge/dynamic/json?url=https://jsonkeeper.com/b/KNO7&label=platform&query=platform&style=flat-square&labelColor=grey&color=purple)
+
+![gif](../assets/screen.gif?raw=true)
 
 
 ## Download

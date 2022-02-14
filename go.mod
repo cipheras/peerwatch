@@ -5,10 +5,12 @@ go 1.17
 require (
 	github.com/anacrolix/torrent v1.40.1
 	github.com/dustin/go-humanize v1.0.0
+	github.com/webview/webview v0.0.0-20220212050339-62c361a22430
 )
 
 require (
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
+	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/anacrolix/chansync v0.3.0 // indirect
 	github.com/anacrolix/confluence v1.9.0 // indirect
 	github.com/anacrolix/dht/v2 v2.14.1-0.20211220010335-4062f7927abf // indirect
@@ -33,6 +35,8 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
+	github.com/josephspurrier/goversioninfo v1.4.0 // indirect
+	github.com/karalabe/xgo v0.0.0-20191115072854-c5ccff8648a7 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/pion/datachannel v1.4.21 // indirect
@@ -55,6 +59,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rs/dnscache v0.0.0-20210201191234-295bba877686 // indirect
+	github.com/zserge/lorca v0.1.10 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.0.0-20210813211128-0a44fdfbc16e // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect

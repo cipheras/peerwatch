@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -14,49 +15,97 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
+
+	"github.com/webview/webview"
 )
 
 const (
-	VERSION = "v1.1"
+	VERSION = "v2.0"
 	RESET   = "\033[0m"
 	RED     = "\033[31m"
 	GREEN   = "\033[32m"
 	CYAN    = "\033[36m"
 	PURPLE  = "\033[35m"
 	BOLD    = "\033[1m"
+	BLINK   = "\033[5m"
 )
 
 var (
-	port         = flag.Int("p", 8080, "Port to access file on browser")
+	port         = flag.Int("p", 8080, "Port on which the tool will stream")
+	tport        = flag.Int("tp", 50010, "Port on which the engine will work")
+	tcp          = flag.Bool("tcp", true, "Connection over TCP or UDP")
+	player       = flag.String("player", "vlc", "Video player to play video [vlc | mpv | mplayer]")
 	link_regex   = "torrent/[0-9]{7}/[a-zA-Z0-9?%-]*/"
 	magnet_regex = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]*"
-	name         string
-	magnet       string
+	query        string
 	client       Client
+	w            webview.WebView
+	err          error
+	ch           chan string
 )
 
-func main() {
+func Peerwatch(ln net.Listener) {
 	windw()
-	banner()
 	interrupt()
+	banner()
 	checkUpdates()
 	flag.Usage = func() {
 		fmt.Print(GREEN + "\n----------------------------------" + PURPLE + " PeerWatch " + GREEN + "----------------------------------\n" + RESET)
-		fmt.Print(BOLD + CYAN + "./peerwatch " + RED + "[name]" + CYAN + " or ./peerwatch \"" + RED + "[name with multiple words]" + CYAN + "\"\n\n" + RESET)
+		fmt.Print(BOLD + CYAN + "[+] ./peerwatch " + RED + "[name]" + CYAN + " or ./peerwatch \"" + RED + "[name with multiple words]" + CYAN + "\"\n" + RESET)
+		fmt.Print(BOLD + CYAN + "[+] Press " + RED + "ctrl + c" + CYAN + " to close\n\n" + RESET)
 		flag.PrintDefaults()
 		fmt.Print(GREEN + "----------------------------------" + PURPLE + " PeerWatch " + GREEN + "----------------------------------\n\n" + RESET)
 	}
 	flag.Parse()
 	if len(flag.Args()) == 0 {
 		flag.Usage()
+		// Run GUI as a thread
+		ch = make(chan string)
+		go gui(ln)
+		query = <-ch
+	} else {
+		query = flag.Arg(0)
+	}
+	name, magnet := find(query)
+	// Found or Not
+	if magnet == "" {
+		fmt.Println(BOLD + RED + "[-] " + BLINK + "FIle Not Found" + RESET + BOLD + RED + "...Try with another name" + RESET)
+		w.Eval(`document.getElementById("status").innerText="File Not Found!!"`)
 		os.Exit(0)
 	}
+	w.Eval(fmt.Sprintf("document.getElementById('status').innerText='%s'", strings.Split(name, "/")[2]))
+	// w.Destroy()
 
-	// Input query as arg
-	query := flag.Arg(0)
+	// Engine config
+	cfg := ClientConfig{
+		TorrentPath:    magnet,
+		Port:           *port,
+		TorrentPort:    *tport,
+		Seed:           false,
+		TCP:            *tcp,
+		MaxConnections: 200,
+	}
+	engine(cfg)
+}
 
+func callback(uiname string) {
+	ch <- uiname
+}
+
+func gui(ln net.Listener) {
+	debug := false
+	w = webview.New(debug)
+	defer w.Destroy()
+	w.SetTitle("PeerWatch")
+	w.SetSize(480, 320, webview.HintNone)
+	w.Bind("callback", callback)
+	w.Navigate(fmt.Sprintf("http://%s/www/", ln.Addr()))
+	w.Run()
+}
+
+func find(query string) (string, string) {
+	var magnet, name string
 	// Get searches from query
 	url := strings.TrimSpace(strings.ReplaceAll(fmt.Sprintf("https://1337x.wtf/search/%v/1/", query), " ", "+"))
 	resp, err := http.Get(url)
@@ -90,22 +139,12 @@ func main() {
 		re := regexp.MustCompile(magnet_regex)
 		magnet = re.FindString(string(magnet_body))
 	}
-
-	// Engine config
-	cfg := ClientConfig{
-		TorrentPath:    magnet,
-		Port:           *port,
-		TorrentPort:    50007,
-		Seed:           false,
-		TCP:            true,
-		MaxConnections: 200,
-	}
-	engine(cfg)
+	return name, magnet
 }
 
 func engine(cfg ClientConfig) {
 	// Start torrent client
-	client, err := NewClient(cfg)
+	client, err = NewClient(cfg)
 	if err != nil {
 		log.Fatalf(err.Error())
 		os.Exit(0)
@@ -120,7 +159,7 @@ func engine(cfg ClientConfig) {
 		for !client.ReadyForPlayback() {
 			time.Sleep(time.Second)
 		}
-		openPlayer("vlc", cfg.Port)
+		openPlayer(*player, cfg.Port)
 	}()
 	// Cli render
 	for {
@@ -140,18 +179,18 @@ func banner() {
 888        Y8b.     Y8b.     888     8888P   Y8888 888  888 Y88b.  Y88b.    888  888 
 888         "Y8888   "Y8888  888     888P     Y888 "Y888888  "Y888  "Y8888P 888  888   ` + RED + `
 ====================================================================================   ` + CYAN + `
-Created by:				                       Version: -~{ ` + RESET + RED + `v1.0` + BOLD + CYAN + ` }~-` + GREEN + `			    
+Created by:				                       Version: -~{ ` + RESET + RED + VERSION + BOLD + CYAN + ` }~-` + GREEN + `			    
 +-+ +-+ +-+ +-+ +-+ +-+ +-+ +-+	
 |C| |i| |p| |h| |e| |r| |a| |s|
 +-+ +-+ +-+ +-+ +-+ +-+ +-+ +-+	                                                                                
 ` + RESET
-	fmt.Print(bb)
+	fmt.Print(bb + "\n")
 }
 
 func checkUpdates() {
 	resp, err := http.Get("https://api.github.com/repos/cipheras/peerwatch/releases")
 	if err != nil {
-		log.Fatalln("unable to check updates")
+		log.Fatalln("unable to check updates:", err)
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
@@ -166,7 +205,7 @@ func checkUpdates() {
 	version := jsondata[0]["tag_name"].(string)
 	releasName := jsondata[0]["name"].(string)
 	if version != VERSION {
-		fmt.Println(BOLD + CYAN + "Update available..." + RED + version + " [" + releasName + "]" + RESET)
+		fmt.Println(BOLD + CYAN + "[+] Update available..." + BLINK + GREEN + version + " [" + releasName + "]" + RESET)
 	}
 }
 
@@ -186,18 +225,13 @@ func interrupt() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c,
 		os.Interrupt,
-		syscall.SIGHUP,
-		syscall.SIGSEGV,
-		syscall.SIGINT,
-		syscall.SIGTERM,
-		syscall.SIGQUIT,
 	)
 	go func(c chan os.Signal) {
 		<-c
-		for range c {
-			log.Println("Exiting...wait!")
-			client.Close()
-			os.Exit(0)
-		}
+		fmt.Print("\r")
+		log.Println("Exiting...!!")
+		time.Sleep(time.Second)
+		os.Exit(0)
+
 	}(c)
 }

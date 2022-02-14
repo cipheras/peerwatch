@@ -3,6 +3,8 @@
 github.com/RoaringBitmap/roaring
 github.com/RoaringBitmap/roaring/BitSliceIndexing
 github.com/RoaringBitmap/roaring/internal
+# github.com/akavel/rsrc v0.10.2
+## explicit; go 1.12
 # github.com/anacrolix/chansync v0.3.0
 ## explicit; go 1.16
 github.com/anacrolix/chansync
@@ -125,6 +127,10 @@ github.com/gorilla/websocket
 # github.com/huandu/xstrings v1.3.2
 ## explicit; go 1.12
 github.com/huandu/xstrings
+# github.com/josephspurrier/goversioninfo v1.4.0
+## explicit; go 1.12
+# github.com/karalabe/xgo v0.0.0-20191115072854-c5ccff8648a7
+## explicit
 # github.com/mattn/go-isatty v0.0.12
 ## explicit; go 1.12
 github.com/mattn/go-isatty
@@ -225,6 +231,11 @@ github.com/remyoudompheng/bigfft
 # github.com/rs/dnscache v0.0.0-20210201191234-295bba877686
 ## explicit; go 1.12
 github.com/rs/dnscache
+# github.com/webview/webview v0.0.0-20220212050339-62c361a22430
+## explicit; go 1.13
+github.com/webview/webview
+# github.com/zserge/lorca v0.1.10
+## explicit; go 1.13
 # go.etcd.io/bbolt v1.3.6
 ## explicit; go 1.12
 go.etcd.io/bbolt

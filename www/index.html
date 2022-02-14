@@ -1,0 +1,24 @@
+<!doctype html>
+<head>
+<link rel="icon" type="image/x-icon" href="https://github.com/cipheras/peerwatch/blob/assets/peerwatch.ico">
+<link rel="shortcut icon" href="https://github.com/cipheras/peerwatch/blob/assets/peerwatch.ico" type="image/x-icon" />
+</head>
+
+
+<input name="uiname" id="uiname" type="text" placeholder="Enter name.." />
+<input name="buttonExecute" onclick="run()" type="button" value="Run" />
+<script>
+  function run() {
+    var v = document.getElementById('uiname').value;
+    var s = document.getElementById('status');
+    if (v != null && v != " " && v != "") {
+      s.innerText = v;
+      callback(v);
+    } else {
+      s.innerText = 'ERROR!! Enter proper name';
+    }
+  }
+
+</script>
+<br>
+<p id="status">Found video name will show up here</p>

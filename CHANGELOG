@@ -1,0 +1,7 @@
+v2.0
+- UI support
+- Multiple players to choose from, to play videos [vlc | mpv | mplayer]
+- Auto update check feature
+- Port to choose for connections and streaming seperately
+- Choice over TCP or UDP connections 
+- More optimized code
