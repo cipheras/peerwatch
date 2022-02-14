@@ -1,8 +1,8 @@
 <div>
-<img align="left" src="../assets/peerwatch.ico?raw=true" alt="PeerWatch" width="40px" height="40px" />
+<img align="left" src="../assets/peerwatch.ico?raw=true" alt="PeerWatch" width="50px" height="50px" />
 
 # PeerWatch &nbsp; ![GitHub release (latest by date)](https://img.shields.io/github/v/release/cipheras/peerwatch?style=flat-square&logo=superuser) 
-
+  
 </div>
   
 #### A tool to stream videos directly into the VLC media player.
