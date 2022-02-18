@@ -31,6 +31,9 @@ func (p GenericPlayer) Open(url string) error {
 	if runtime.GOOS == "darwin" {
 		command = []string{"open", "-a"}
 	}
+	if runtime.GOOS == "windows" {
+		command = []string{"start"}
+	}
 	command = append(command, p.Args...)
 	command = append(command, url)
 	// #nosec
