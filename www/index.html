@@ -1,24 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <head>
-<link rel="icon" type="image/x-icon" href="https://github.com/cipheras/peerwatch/blob/assets/peerwatch.ico">
-<link rel="shortcut icon" href="https://github.com/cipheras/peerwatch/blob/assets/peerwatch.ico" type="image/x-icon" />
+  <link
+    rel="icon"
+    type="image/x-icon"
+    href="https://github.com/cipheras/peerwatch/blob/assets/peerwatch.ico"
+  />
+  <link
+    rel="shortcut icon"
+    href="https://github.com/cipheras/peerwatch/blob/assets/peerwatch.ico"
+    type="image/x-icon"
+  />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
-
-<input name="uiname" id="uiname" type="text" placeholder="Enter name.." />
-<input name="buttonExecute" onclick="run()" type="button" value="Run" />
-<script>
-  function run() {
-    var v = document.getElementById('uiname').value;
-    var s = document.getElementById('status');
-    if (v != null && v != " " && v != "") {
-      s.innerText = v;
-      callback(v);
-    } else {
-      s.innerText = 'ERROR!! Enter proper name';
+<body>
+  <div class="container">
+    <h1>Peer Watch</h1>
+    <div class="form">
+      <div class="name-field-section">
+        <input
+          class="name-field"
+          name="uiname"
+          id="uiname"
+          type="text"
+          placeholder="Enter name.."
+        />
+        <span id="error-text" class="error-text"></span>
+      </div>
+      <button name="buttonExecute" onclick="run()" type="button" value="Run">
+        Search
+      </button>
+    </div>
+    <p id="status">Found video name will show up here</p>
+  </div>
+  <script>
+    var nameField = document.getElementById("uiname");
+    // Search on pressing Enter key
+    nameField.addEventListener("keyup", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        run();
+      }
+    });
+    function run() {
+      var v = nameField.value;
+      var s = document.getElementById("status");
+      var error = document.getElementById("error-text");
+      if (v != null && v != " " && v != "") {
+        error.innerText = "";
+        nameField.classList.remove("name-field-error");
+        s.innerText = v;
+        callback(v);
+      } else {
+        error.innerText = "Enter a proper name...";
+        nameField.classList.add("name-field-error");
+        s.innerText = "Found video name will show up here";
+      }
     }
-  }
-
-</script>
-<br>
-<p id="status">Found video name will show up here</p>
+  </script>
+</body>
