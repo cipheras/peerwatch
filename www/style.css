@@ -1,0 +1,79 @@
+body {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(128, 227, 158, 1) 1%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.2em;
+  margin: 0;
+}
+
+h1 {
+  margin: 20px 30px 10px 30px;
+  font-size: 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 40px 5px 15px 5px;
+  width: 80%;
+}
+
+.name-field {
+  padding-left: 10px;
+  border: none;
+  background-color: white;
+  width: 250px;
+  height: 35px;
+  border-radius: 10px;
+}
+
+.name-field-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-field-error {
+  border: solid red 2px;
+}
+
+input:focus {
+  outline: none;
+}
+
+.error-text {
+  font-size: 13px;
+  margin: 0 0 0 25px;
+  color: red;
+}
+
+button {
+  width: 80px;
+  align-items: center;
+  height: 38px;
+  display: block;
+  text-decoration: none;
+  background-color: rgb(28, 173, 130);
+  color: #ebf1ef;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+button:hover {
+  box-shadow: 0 0 0 2px rgba(8, 148, 38, 0.404), 0 0 0 3px rgb(7, 131, 125);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
