@@ -24,6 +24,8 @@ const torrentBlockListURL = "http://john.bitsurge.net/public/biglist.p2p.gz"
 
 var isHTTP = regexp.MustCompile(`^https?:\/\/`)
 
+var DS string
+
 // ClientError formats errors coming from the client.
 type ClientError struct {
 	Type   string
@@ -216,12 +218,16 @@ func (c *Client) Render() {
 	fmt.Fprint(output, t.Info().Name+"\n")
 	fmt.Fprint(output, strings.Repeat("=", len(t.Info().Name))+"\n")
 	if c.ReadyForPlayback() {
-		fmt.Fprintf(output, "Stream: \thttp://localhost:%d\n", c.Config.Port)
+		fmt.Fprintf(output, "Streaming at: \thttp://localhost:%d\n", c.Config.Port)
+	} else {
+		// If not ready for stream
+		fmt.Fprint(output, ">> Stream will start after 5% progress <<\n\n")
 	}
 	if currentProgress > 0 {
 		fmt.Fprintf(output, "Progress: \t%s / %s  %.2f%%\n", complete, size, percentage)
 	}
 	if currentProgress < totalLength {
+		DS = downloadSpeed // for GUI
 		fmt.Fprintf(output, "Download speed: %s\n", downloadSpeed)
 	}
 	if c.Config.Seed {

@@ -17,11 +17,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/webview/webview"
 )
 
 const (
-	VERSION = "v2.0"
+	VERSION = "v2.1"
 	RESET   = "\033[0m"
 	RED     = "\033[31m"
 	GREEN   = "\033[32m"
@@ -42,8 +43,11 @@ var (
 	client       Client
 	w            webview.WebView
 	err          error
-	ch           chan string
+	ui           bool
 )
+
+var ch = make(chan string)
+var UIclose = make(chan bool)
 
 func Peerwatch(ln net.Listener) {
 	windw()
@@ -59,9 +63,9 @@ func Peerwatch(ln net.Listener) {
 	}
 	flag.Parse()
 	if len(flag.Args()) == 0 {
+		ui = true
 		flag.Usage()
 		// Run GUI as a thread
-		ch = make(chan string)
 		go gui(ln)
 		query = <-ch
 	} else {
@@ -71,12 +75,14 @@ func Peerwatch(ln net.Listener) {
 	// Found or Not
 	if magnet == "" {
 		fmt.Println(BOLD + RED + "[-] " + BLINK + "FIle Not Found" + RESET + BOLD + RED + "...Try with another name" + RESET)
-		w.Eval(`document.getElementById("status").innerText="File Not Found!!"`)
+		if ui {
+			w.Eval(`document.getElementById("status").innerText="File Not Found!!"`)
+		}
 		os.Exit(0)
 	}
-	w.Eval(fmt.Sprintf("document.getElementById('status').innerText='%s'", strings.Split(name, "/")[2]))
-	// w.Destroy()
-
+	if ui {
+		w.Eval(fmt.Sprintf("document.getElementById('status').innerText='%s'", strings.Split(name, "/")[2]))
+	}
 	// Engine config
 	cfg := ClientConfig{
 		TorrentPath:    magnet,
@@ -102,6 +108,7 @@ func gui(ln net.Listener) {
 	w.Bind("callback", callback)
 	w.Navigate(fmt.Sprintf("http://%s/www/", ln.Addr()))
 	w.Run()
+	UIclose <- true
 }
 
 func find(query string) (string, string) {
@@ -161,9 +168,23 @@ func engine(cfg ClientConfig) {
 		}
 		openPlayer(*player, cfg.Port)
 	}()
-	// Cli render
+	counter := 0
 	for {
 		client.Render()
+		if ui {
+			data := humanize.Bytes(uint64(client.Progress))
+			speed := DS
+			perc := client.percentage()
+			if client.Progress > 0 {
+				w.Eval(fmt.Sprintf("var data= '%v'; var speed='%v'; var perc='%.2f%%'", data, speed, perc))
+				w.Eval(`document.getElementById('status').innerHTML =
+			'Data Downloaded: ' + data + '<br>Speed: ' + speed + '<br>Progress: ' + perc;`)
+				w.Eval(fmt.Sprintf(`<html><br><br> <b>Download at: <a href="http://localhost:%v">HERE</a> </b><html>`, *port))
+			} else {
+				counter++
+				w.Eval(fmt.Sprintf(`document.getElementById('form').innerHTML = "Waiting to start: %v s<br>[It depends on your internet speed]"`, counter))
+			}
+		}
 		time.Sleep(time.Second)
 	}
 }
@@ -227,11 +248,15 @@ func interrupt() {
 		os.Interrupt,
 	)
 	go func(c chan os.Signal) {
-		<-c
+		select {
+		case <-UIclose:
+			log.Println("UI window closed")
+			w.Terminate()
+		case <-c:
+		}
 		fmt.Print("\r")
 		log.Println("Exiting...!!")
 		time.Sleep(time.Second)
 		os.Exit(0)
-
 	}(c)
 }

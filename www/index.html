@@ -15,7 +15,7 @@
 <body>
   <div class="container">
     <h1>Peer Watch</h1>
-    <div class="form">
+    <div class="form" id="form">
       <div class="name-field-section">
         <input
           class="name-field"
@@ -31,6 +31,9 @@
       </button>
     </div>
     <p id="status">Found video name will show up here</p>
+    <div>
+      <b id="progress"></b>
+    </div>
   </div>
   <script>
     var nameField = document.getElementById("uiname");
