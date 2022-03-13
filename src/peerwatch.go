@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	VERSION = "v2.1"
+	VERSION = "v2.2"
 	RESET   = "\033[0m"
 	RED     = "\033[31m"
 	GREEN   = "\033[32m"
@@ -71,17 +71,19 @@ func Peerwatch(ln net.Listener) {
 	} else {
 		query = flag.Arg(0)
 	}
+	query = strings.ReplaceAll(strings.TrimSpace(query), " ", "+")
 	name, magnet := find(query)
 	// Found or Not
 	if magnet == "" {
-		fmt.Println(BOLD + RED + "[-] " + BLINK + "FIle Not Found" + RESET + BOLD + RED + "...Try with another name" + RESET)
+		fmt.Println(BOLD + RED + "[-] " + BLINK + "File Not Found" + RESET + RED + "...Try with another name" + RESET)
 		if ui {
-			w.Eval(`document.getElementById("status").innerText="File Not Found!!"`)
+			w.Eval(`document.getElementById('status').innerText='File Not Found!!'`)
 		}
+		time.Sleep(time.Second)
 		os.Exit(0)
 	}
 	if ui {
-		w.Eval(fmt.Sprintf("document.getElementById('status').innerText='%s'", strings.Split(name, "/")[2]))
+		w.Eval(fmt.Sprintf("document.getElementById('form').innerText='%s'", strings.Split(name, "/")[2]))
 	}
 	// Engine config
 	cfg := ClientConfig{
@@ -113,40 +115,46 @@ func gui(ln net.Listener) {
 
 func find(query string) (string, string) {
 	var magnet, name string
-	// Get searches from query
-	url := strings.TrimSpace(strings.ReplaceAll(fmt.Sprintf("https://1337x.wtf/search/%v/1/", query), " ", "+"))
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatalln("unable to connect")
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode == 200 {
-		body, err := ioutil.ReadAll(resp.Body)
+	dom := []string{"wtf", "st", "unblockninja.com", "unblockit.app", "eu", "ws", "se", "is", "gd", "tw", "buzz"}
+	for i, d := range dom {
+		log.Println("contacting server", i+1)
+		// Get searches from query
+		url := fmt.Sprintf("https://1337x.%s/search/%v/1/", d, query)
+		resp, err := http.Get(url)
 		if err != nil {
-			log.Fatalf("unable to read defined search")
+			log.Println("unable to connect to server", i+1)
+			continue
 		}
-		// regex find link
-		re := regexp.MustCompile(link_regex)
-		name = re.FindString(string(body))
-	}
+		defer resp.Body.Close()
+		if resp.StatusCode == 200 {
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Fatalf("unable to read defined search")
+			}
+			// regex find link
+			re := regexp.MustCompile(link_regex)
+			name = re.FindString(string(body))
 
-	// Get magnet links from top search result
-	get_magnet := fmt.Sprintf("https://1337x.wtf/%v", name)
-	get_magnet_resp, err := http.Get(get_magnet)
-	if err != nil {
-		log.Fatalf("unable to connect")
-	}
-	defer get_magnet_resp.Body.Close()
-	if get_magnet_resp.StatusCode == 200 {
-		magnet_body, err := ioutil.ReadAll(get_magnet_resp.Body)
-		if err != nil {
-			log.Fatalf("unable to read defined result")
+			// Get magnet links from top search result
+			get_magnet := fmt.Sprintf("https://1337x.%s/%v", d, name)
+			get_magnet_resp, err := http.Get(get_magnet)
+			if err != nil {
+				log.Fatalf("unable to connect to domain")
+			}
+			defer get_magnet_resp.Body.Close()
+			// if get_magnet_resp.StatusCode == 200 {
+			magnet_body, err := ioutil.ReadAll(get_magnet_resp.Body)
+			if err != nil {
+				log.Fatalf("unable to read defined result")
+			}
+			// regex find magnet
+			re = regexp.MustCompile(magnet_regex)
+			magnet = re.FindString(string(magnet_body))
+			// }
+			return name, magnet
 		}
-		// regex find magnet
-		re := regexp.MustCompile(magnet_regex)
-		magnet = re.FindString(string(magnet_body))
 	}
-	return name, magnet
+	return "", ""
 }
 
 func engine(cfg ClientConfig) {
@@ -172,21 +180,47 @@ func engine(cfg ClientConfig) {
 	for {
 		client.Render()
 		if ui {
-			data := humanize.Bytes(uint64(client.Progress))
-			speed := DS
-			perc := client.percentage()
-			if client.Progress > 0 {
-				w.Eval(fmt.Sprintf("var data= '%v'; var speed='%v'; var perc='%.2f%%'", data, speed, perc))
-				w.Eval(`document.getElementById('status').innerHTML =
-			'Data Downloaded: ' + data + '<br>Speed: ' + speed + '<br>Progress: ' + perc;`)
-				w.Eval(fmt.Sprintf(`<html><br><br> <b>Download at: <a href="http://localhost:%v">HERE</a> </b><html>`, *port))
-			} else {
-				counter++
-				w.Eval(fmt.Sprintf(`document.getElementById('form').innerHTML = "Waiting to start: %v s<br>[It depends on your internet speed]"`, counter))
-			}
+			counter = UIrender(counter)
 		}
 		time.Sleep(time.Second)
 	}
+}
+
+func UIrender(counter int) int {
+	data := humanize.Bytes(uint64(client.Progress))
+	speed := DS
+	perc := client.percentage()
+	if client.Progress > 0 {
+		w.Eval(fmt.Sprintf(`
+		var TABLE = "<table>\
+		  <tr>\
+	        <td>Data Downloaded</td>\
+		    <td>%v</td>\
+		  </tr>\
+		  <tr>\
+		    <td>Speed</td>\
+		    <td>%v</td>\
+		  </tr>\
+		  <tr>\
+		    <td>Progress</td>\
+		    <td>%.2f%%</td>\
+		  </tr>\
+		</table>";
+		document.getElementById("progress").innerHTML = TABLE;
+		`, data, speed, perc))
+
+		w.Eval(fmt.Sprintf(`
+		document.getElementById('status').innerHTML =
+		'[Download the video once 100%% complete, at]<br><b> http://localhost:%v </b>';
+		`, *port))
+	} else {
+		counter++
+		w.Eval(fmt.Sprintf(`
+		document.getElementById('status').innerHTML = 
+		'Waiting to start: %v s<br>[It depends on your internet speed]'
+		`, counter))
+	}
+	return counter
 }
 
 func banner() {

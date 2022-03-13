@@ -1,3 +1,14 @@
+v2.2
+- Added multiple server support
+
+
+v2.1
+- Added new compiled working DLLs for windows
+- Resolved some goroutine issues
+- Linked window close with program termination
+- Added support for in-window progress status(UI changes are left) 
+
+
 v2.0
 - UI support
 - Multiple players to choose from, to play videos [vlc | mpv | mplayer]
