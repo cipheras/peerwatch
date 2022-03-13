@@ -32,7 +32,7 @@ func (p GenericPlayer) Open(url string) error {
 		command = []string{"open", "-a"}
 	}
 	if runtime.GOOS == "windows" {
-		command = []string{"start"}
+		command = []string{"cmd", "/C", "start"}
 	}
 	command = append(command, p.Args...)
 	command = append(command, url)
