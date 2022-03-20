@@ -5,7 +5,7 @@
   
 </div>
   
-#### A tool to stream videos directly into the VLC media player.
+#### A tool to stream videos directly into the media player without any hazzle by just name of the video. It also have UI version to make it easy for common users. To run UI version, just execute binary directly.
 
 ![GO version](https://img.shields.io/github/go-mod/go-version/cipheras/peerwatch?style=flat-square&color=blue)
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -39,6 +39,7 @@ For linux uninstall:
 sudo make uninstall
 ```
 For windows:
+***NOTE: For windows, DLLs are necessary to be kept in the same directory.***
 ```
 go build
 ```
@@ -47,10 +48,17 @@ go build
 ## Usage
 **It may take some time to buffer as it depends on the file size and network speed.**
 ```
-./peerwatch [-h] [-p port] [name]
+[+] ./peerwatch [name] or ./peerwatch "[name with multiple words]"
+[+] Press ctrl + c to close
 
--p     port on which tool will run
-name   name of the movie(use double quotes for multi words name)
+  -p int
+        Port on which the tool will stream (default 8080)
+  -player string
+        Video player to play video [vlc | mpv | mplayer] (default "vlc")
+  -tcp
+        Connection over TCP or UDP (default true)
+  -tp int
+        Port on which the engine will work (default 50010)
 
 Example:
 peerwatch.exe xyz
@@ -59,7 +67,7 @@ or
 ```
 
 ## Disclaimer
-*This tool or author are not responsible for any type of copywrite claim. This tool work similarly as common user visiting the source and stream videos on their browsers.*
+*This tool or author are not responsible for any type of copywrite claim. This tool work similarly as common user visiting the source and streaming videos on their browsers.*
 
 ## License
 **peerwatch** is made by **@cipheras** and is released under the terms of the &nbsp;![GitHub License](https://img.shields.io/github/license/cipheras/peerwatch?color=darkgreen)
