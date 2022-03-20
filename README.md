@@ -38,8 +38,8 @@ For linux uninstall:
 ```
 sudo make uninstall
 ```
-For windows:
-***NOTE: For windows, DLLs are necessary to be kept in the same directory.***
+For windows:<br>
+*NOTE: For windows, DLLs are necessary to be kept in the same directory.*
 ```
 go build
 ```
